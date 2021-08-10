@@ -1,8 +1,12 @@
-// TODO: Include packages needed for this application
 const inquirer = require('inquirer');
 const fs = require('fs');
+const util = require('util');
 
-// TODO: Create an array of questions for user input
+
+
+const writeFileAsync = util.promisify(fs.writeFile);
+
+
 const questions = () => {
   return inquirer.prompt ([
     {
@@ -52,14 +56,45 @@ const questions = () => {
         message: 'Please enter email address.',
       },
   ])
-
 };
 
-// TODO: Create a function to write README file
-function writeToFile(fileName, data) {}
+const generateREADME = (answers) => 
+`# ${answers.title}
 
-// TODO: Create a function to initialize app
-function init() {}
+# Table of contents
+* [Description](#Description)
+* [Installation](#Installation)
+* [Usage](#Usage)
+* [Contributing](#Contributing)
+* [Tests](#Tests)
+* [Questions](#Questions)
 
-// Function call to initialize app
+# Description
+${answers.description}
+
+# Installation
+${answers.installation}
+
+# Usage
+${answers.usage}
+
+# Contributing
+${answers.contribution}
+
+# Tests
+${answers.test}
+
+#Questions
+* Github: [${answers.github}](https://github.com/${answers.github})
+* Email: ${answers.email}
+
+`
+
+const init =() => {
+    questions()
+    .then((answers) => writeFileAsync ('README.md', generateREADME(answers)))
+    .then(() => console.log('Successfully creates README.md!'))
+    .catch((err) => console.log(err));
+};
+
 init();
