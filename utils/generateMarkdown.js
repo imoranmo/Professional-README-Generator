@@ -97,7 +97,7 @@ function renderLicenseSection(license) {
     return
   }
   if (license !== 'No License'){
-    const header = '# license';
+    const header = '# License';
     return header
   }
 
