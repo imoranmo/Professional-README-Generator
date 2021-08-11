@@ -1,8 +1,7 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 const util = require('util');
-
-
+const license = require ('./utils/generateMarkdown')
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
@@ -40,7 +39,7 @@ const questions = () => {
         message: 'Please provide test instructions',
       },
       {
-        type: 'checkbox',
+        type: 'list',
         name: 'license',
         message: 'Please select license',
         choices: ['No License', 'Apache', 'Boost', 'BSD', 'Creative Commons', 'Eclipse', 'GNU', 'IBM', 'ISC', 'MIT', 'Mozilla']
@@ -58,8 +57,12 @@ const questions = () => {
   ])
 };
 
-const generateREADME = (answers) => 
-`# ${answers.title}
+const generateREADME = (answers) =>  {
+
+  const badge = license (answers.license);
+  const message = `
+  ${badge}
+# ${answers.title}
 
 # Table of contents
 * [Description](#Description)
@@ -84,12 +87,13 @@ ${answers.contribution}
 # Tests
 ${answers.test}
 
-#Questions
+# Questions
 * Github: [${answers.github}](https://github.com/${answers.github})
 * Email: ${answers.email}
 
-`
-
+`;
+return message
+}
 const init =() => {
     questions()
     .then((answers) => writeFileAsync ('README.md', generateREADME(answers)))
